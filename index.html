@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>缓缓清单｜理性消费愿望清单</title>
+  <style>
+    :root{
+      --bg:#f6f7f2;
+      --panel:#fffdf8;
+      --text:#33413b;
+      --muted:#879189;
+      --line:#e6e9e2;
+      --accent:#7f9b89;
+      --accent-dark:#5f7869;
+      --soft:#edf2ed;
+      --danger:#b56f68;
+      --shadow:0 16px 40px rgba(63, 80, 70, .08);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(182,201,187,.24), transparent 32%),
+        linear-gradient(180deg, #f8f8f3 0%, #f2f4ee 100%);
+      font-family: "Noto Serif SC","Songti SC","STSong","PingFang SC",serif;
+    }
+
+    button,input{font:inherit}
+    button{cursor:pointer}
+
+    .app{
+      width:min(1080px, calc(100% - 32px));
+      margin:42px auto 72px;
+    }
+
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:24px;
+      margin-bottom:24px;
+    }
+
+    .eyebrow{
+      color:var(--accent-dark);
+      font-size:13px;
+      letter-spacing:.22em;
+      margin-bottom:8px;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(34px, 6vw, 56px);
+      font-weight:500;
+      letter-spacing:.08em;
+    }
+
+    .subtitle{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-family:"PingFang SC",sans-serif;
+      font-size:14px;
+    }
+
+    .quote{
+      max-width:300px;
+      color:var(--muted);
+      line-height:1.8;
+      text-align:right;
+      font-size:14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:290px 1fr;
+      gap:22px;
+      align-items:start;
+    }
+
+    .card{
+      background:rgba(255,253,248,.92);
+      border:1px solid rgba(226,230,221,.9);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      backdrop-filter:blur(8px);
+    }
+
+    .side{
+      padding:22px;
+      position:sticky;
+      top:20px;
+    }
+
+    .side h2,.panel h2{
+      margin:0 0 18px;
+      font-size:18px;
+      font-weight:500;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-bottom:15px;
+    }
+
+    label{
+      font-family:"PingFang SC",sans-serif;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    input[type="text"],input[type="number"],input[type="file"]{
+      width:100%;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:12px;
+      padding:12px 13px;
+      color:var(--text);
+      outline:none;
+      transition:.2s;
+    }
+
+    input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(127,155,137,.12);
+    }
+
+    input[type="file"]{
+      padding:9px;
+      font-family:"PingFang SC",sans-serif;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .primary{
+      width:100%;
+      border:none;
+      border-radius:13px;
+      padding:12px 16px;
+      color:#fff;
+      background:var(--accent-dark);
+      transition:.2s;
+    }
+
+    .primary:hover{transform:translateY(-1px); opacity:.94}
+
+    .budget{
+      margin-top:24px;
+      padding-top:20px;
+      border-top:1px solid var(--line);
+    }
+
+    .budget-row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:8px 0;
+      font-family:"PingFang SC",sans-serif;
+      font-size:13px;
+    }
+
+    .budget-row span:first-child{color:var(--muted)}
+    .budget-row strong{font-size:15px}
+
+    .progress{
+      height:8px;
+      margin:12px 0 4px;
+      background:var(--soft);
+      border-radius:99px;
+      overflow:hidden;
+    }
+
+    .progress > div{
+      width:0;
+      height:100%;
+      background:linear-gradient(90deg,var(--accent),var(--accent-dark));
+      border-radius:99px;
+      transition:.35s;
+    }
+
+    .tip{
+      margin:12px 0 0;
+      color:var(--muted);
+      font-family:"PingFang SC",sans-serif;
+      font-size:12px;
+      line-height:1.7;
+    }
+
+    .panel{overflow:hidden}
+
+    .tabs{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:18px 20px 0;
+    }
+
+    .tab{
+      border:none;
+      background:transparent;
+      color:var(--muted);
+      padding:10px 14px;
+      border-radius:999px;
+      font-family:"PingFang SC",sans-serif;
+      font-size:14px;
+    }
+
+    .tab.active{
+      color:var(--accent-dark);
+      background:var(--soft);
+      font-weight:600;
+    }
+
+    .table-head,.wish{
+      display:grid;
+      grid-template-columns:56px minmax(180px,1fr) 120px 90px 86px;
+      align-items:center;
+    }
+
+    .table-head{
+      margin-top:14px;
+      padding:12px 20px;
+      background:#f7f8f4;
+      color:var(--muted);
+      font-family:"PingFang SC",sans-serif;
+      font-size:12px;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .list{min-height:260px}
+
+    .wish{
+      min-height:72px;
+      padding:10px 20px;
+      border-bottom:1px solid var(--line);
+      transition:.2s;
+    }
+
+    .wish:hover{background:#fffefa}
+
+    .rank{
+      color:var(--muted);
+      font-family:"PingFang SC",sans-serif;
+      font-size:12px;
+    }
+
+    .name{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+
+    .name-text{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      font-size:15px;
+    }
+
+    .price{
+      font-family:"PingFang SC",sans-serif;
+      font-size:14px;
+    }
+
+    .thumb-btn{
+      width:42px;
+      height:42px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:#fff;
+      padding:0;
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .thumb-btn img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .move{
+      display:flex;
+      gap:5px;
+    }
+
+    .icon-btn{
+      width:32px;
+      height:32px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--accent-dark);
+      border-radius:9px;
+      line-height:1;
+    }
+
+    .icon-btn:hover{background:var(--soft)}
+    .icon-btn:disabled{opacity:.3; cursor:not-allowed}
+
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      gap:7px;
+    }
+
+    .check{
+      appearance:none;
+      width:22px;
+      height:22px;
+      border:1.5px solid var(--accent);
+      border-radius:7px;
+      display:grid;
+      place-content:center;
+      background:#fff;
+    }
+
+    .check::before{
+      content:"✓";
+      color:#fff;
+      font-size:14px;
+      transform:scale(0);
+      transition:.15s;
+    }
+
+    .check:checked{background:var(--accent-dark)}
+    .check:checked::before{transform:scale(1)}
+
+    .delete{
+      border:none;
+      background:transparent;
+      color:#b9bdb8;
+      font-size:18px;
+      padding:4px;
+    }
+
+    .delete:hover{color:var(--danger)}
+
+    .empty{
+      padding:66px 20px;
+      text-align:center;
+      color:var(--muted);
+      font-family:"PingFang SC",sans-serif;
+      line-height:1.8;
+    }
+
+    .footer-note{
+      padding:16px 20px 20px;
+      color:var(--muted);
+      font-family:"PingFang SC",sans-serif;
+      font-size:12px;
+      text-align:right;
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      z-index:20;
+      display:none;
+      place-items:center;
+      padding:24px;
+      background:rgba(34,43,38,.62);
+    }
+
+    .modal.show{display:grid}
+
+    .modal-content{
+      max-width:min(760px, 92vw);
+      max-height:82vh;
+      border-radius:18px;
+      overflow:hidden;
+      background:#fff;
+      box-shadow:0 22px 70px rgba(0,0,0,.25);
+      position:relative;
+    }
+
+    .modal-content img{
+      display:block;
+      max-width:100%;
+      max-height:82vh;
+      object-fit:contain;
+    }
+
+    .modal-close{
+      position:absolute;
+      right:12px;
+      top:12px;
+      width:36px;
+      height:36px;
+      border:none;
+      border-radius:50%;
+      background:rgba(255,255,255,.88);
+      font-size:20px;
+    }
+
+    @media (max-width:820px){
+      header{align-items:flex-start; flex-direction:column}
+      .quote{text-align:left}
+      .grid{grid-template-columns:1fr}
+      .side{position:static}
+      .table-head{display:none}
+      .wish{
+        grid-template-columns:40px 1fr 76px;
+        grid-template-areas:
+          "rank name actions"
+          "rank meta actions";
+        gap:8px;
+        padding:14px 16px;
+      }
+      .rank{grid-area:rank}
+      .name{grid-area:name}
+      .price{grid-area:meta}
+      .thumb{grid-area:meta; margin-left:88px}
+      .move{grid-area:rank; margin-top:26px; flex-direction:column}
+      .actions{grid-area:actions}
+      .price::before{content:"¥ "; color:var(--muted)}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <div class="eyebrow">BUY SLOWLY, LIVE LIGHTLY</div>
+        <h1>缓缓清单</h1>
+        <p class="subtitle">把“想要”放一放，把真正喜欢的留在前面。</p>
+      </div>
+      <div class="quote">愿望不需要立刻实现。<br>先排序，再等待，再决定。</div>
+    </header>
+
+    <section class="grid">
+      <aside class="card side">
+        <h2>放入一个愿望</h2>
+        <form id="wishForm">
+          <div class="field">
+            <label for="wishName">我想买</label>
+            <input id="wishName" type="text" maxlength="60" placeholder="例如：一把适合练习的电钢琴" required>
+          </div>
+          <div class="field">
+            <label for="wishPrice">预计价格</label>
+            <input id="wishPrice" type="number" min="0" step="0.01" placeholder="0.00" required>
+          </div>
+          <div class="field">
+            <label for="wishImage">图片（可选）</label>
+            <input id="wishImage" type="file" accept="image/*">
+          </div>
+          <button class="primary" type="submit">加入愿望清单</button>
+        </form>
+
+        <div class="budget">
+          <h2>本月可选预算</h2>
+          <div class="field">
+            <label for="budgetInput">预算金额</label>
+            <input id="budgetInput" type="number" min="0" step="0.01" placeholder="例如：2000">
+          </div>
+          <div class="budget-row"><span>待实现愿望总额</span><strong id="pendingTotal">¥0.00</strong></div>
+          <div class="budget-row"><span>本月已实现</span><strong id="completedTotal">¥0.00</strong></div>
+          <div class="budget-row"><span>剩余可选预算</span><strong id="remainingBudget">—</strong></div>
+          <div class="progress"><div id="budgetProgress"></div></div>
+          <p class="tip" id="budgetTip">设置预算后，可以更直观地判断本月先满足哪些愿望。</p>
+        </div>
+      </aside>
+
+      <section class="card panel">
+        <div class="tabs">
+          <button class="tab active" data-tab="pending">待实现 <span id="pendingCount">0</span></button>
+          <button class="tab" data-tab="completed">已完成 <span id="completedCount">0</span></button>
+        </div>
+
+        <div class="table-head">
+          <span>顺序</span>
+          <span>愿望</span>
+          <span>价格</span>
+          <span>图片</span>
+          <span style="text-align:right">状态</span>
+        </div>
+
+        <div id="wishList" class="list"></div>
+        <div class="footer-note">数据仅保存在当前浏览器中，不会上传。</div>
+      </section>
+    </section>
+  </main>
+
+  <div class="modal" id="imageModal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" aria-label="关闭">×</button>
+      <img id="modalImage" alt="愿望图片预览">
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "slow-wishlist-v1";
+    const BUDGET_KEY = "slow-wishlist-budget-v1";
+
+    let wishes = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    let currentTab = "pending";
+
+    const form = document.getElementById("wishForm");
+    const nameInput = document.getElementById("wishName");
+    const priceInput = document.getElementById("wishPrice");
+    const imageInput = document.getElementById("wishImage");
+    const list = document.getElementById("wishList");
+    const tabs = document.querySelectorAll(".tab");
+    const budgetInput = document.getElementById("budgetInput");
+    const modal = document.getElementById("imageModal");
+    const modalImage = document.getElementById("modalImage");
+
+    budgetInput.value = localStorage.getItem(BUDGET_KEY) || "";
+
+    const money = value => new Intl.NumberFormat("zh-CN", {
+      style:"currency",
+      currency:"CNY",
+      minimumFractionDigits:2
+    }).format(Number(value || 0));
+
+    function save(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(wishes));
+      render();
+    }
+
+    function getImageData(file){
+      return new Promise((resolve, reject) => {
+        if(!file) return resolve("");
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const image = await getImageData(imageInput.files[0]);
+      wishes.push({
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        name: nameInput.value.trim(),
+        price: Number(priceInput.value),
+        image,
+        completed:false,
+        createdAt:Date.now(),
+        completedAt:null
+      });
+      form.reset();
+      save();
+      nameInput.focus();
+    });
+
+    tabs.forEach(tab => tab.addEventListener("click", () => {
+      currentTab = tab.dataset.tab;
+      tabs.forEach(t => t.classList.toggle("active", t === tab));
+      render();
+    }));
+
+    budgetInput.addEventListener("input", () => {
+      localStorage.setItem(BUDGET_KEY, budgetInput.value);
+      updateSummary();
+    });
+
+    function moveWish(id, direction){
+      const visible = wishes.filter(w => currentTab === "completed" ? w.completed : !w.completed);
+      const currentIndex = visible.findIndex(w => w.id === id);
+      const targetIndex = currentIndex + direction;
+      if(targetIndex < 0 || targetIndex >= visible.length) return;
+
+      const a = wishes.findIndex(w => w.id === visible[currentIndex].id);
+      const b = wishes.findIndex(w => w.id === visible[targetIndex].id);
+      [wishes[a], wishes[b]] = [wishes[b], wishes[a]];
+      save();
+    }
+
+    function toggleComplete(id, checked){
+      const wish = wishes.find(w => w.id === id);
+      wish.completed = checked;
+      wish.completedAt = checked ? Date.now() : null;
+      save();
+    }
+
+    function deleteWish(id){
+      wishes = wishes.filter(w => w.id !== id);
+      save();
+    }
+
+    function showImage(src){
+      modalImage.src = src;
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden","false");
+    }
+
+    function closeModal(){
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden","true");
+      modalImage.src = "";
+    }
+
+    document.getElementById("modalClose").addEventListener("click", closeModal);
+    modal.addEventListener("click", e => {
+      if(e.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", e => {
+      if(e.key === "Escape") closeModal();
+    });
+
+    function render(){
+      const visible = wishes.filter(w => currentTab === "completed" ? w.completed : !w.completed);
+
+      if(!visible.length){
+        list.innerHTML = `<div class="empty">${
+          currentTab === "pending"
+            ? "这里还没有愿望。<br>下一次心动时，先把它放进清单。"
+            : "还没有已完成的愿望。<br>慢慢来，愿望会一个个实现。"
+        }</div>`;
+      }else{
+        list.innerHTML = visible.map((wish, index) => `
+          <div class="wish">
+            <div class="rank">
+              <div>NO.${String(index + 1).padStart(2,"0")}</div>
+              <div class="move">
+                <button class="icon-btn" title="上移" ${index === 0 ? "disabled" : ""} onclick="moveWish('${wish.id}', -1)">↑</button>
+                <button class="icon-btn" title="下移" ${index === visible.length - 1 ? "disabled" : ""} onclick="moveWish('${wish.id}', 1)">↓</button>
+              </div>
+            </div>
+            <div class="name">
+              <span class="name-text" title="${escapeHtml(wish.name)}">${escapeHtml(wish.name)}</span>
+            </div>
+            <div class="price">${money(wish.price)}</div>
+            <div class="thumb">
+              ${wish.image
+                ? `<button class="thumb-btn" title="查看大图" onclick="showImage('${wish.image}')"><img src="${wish.image}" alt=""></button>`
+                : `<span style="color:#c5cac4;font-size:12px">—</span>`
+              }
+            </div>
+            <div class="actions">
+              <input class="check" type="checkbox" aria-label="标记完成" ${wish.completed ? "checked" : ""}
+                onchange="toggleComplete('${wish.id}', this.checked)">
+              <button class="delete" title="删除" onclick="deleteWish('${wish.id}')">×</button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      document.getElementById("pendingCount").textContent = wishes.filter(w => !w.completed).length;
+      document.getElementById("completedCount").textContent = wishes.filter(w => w.completed).length;
+      updateSummary();
+    }
+
+    function updateSummary(){
+      const pending = wishes.filter(w => !w.completed).reduce((s,w) => s + Number(w.price), 0);
+      const completed = wishes.filter(w => w.completed).reduce((s,w) => s + Number(w.price), 0);
+      const budget = Number(budgetInput.value || 0);
+      const remaining = budget ? budget - completed : null;
+
+      document.getElementById("pendingTotal").textContent = money(pending);
+      document.getElementById("completedTotal").textContent = money(completed);
+      document.getElementById("remainingBudget").textContent = remaining === null ? "—" : money(remaining);
+
+      const progress = budget ? Math.min((completed / budget) * 100, 100) : 0;
+      document.getElementById("budgetProgress").style.width = progress + "%";
+
+      const tip = document.getElementById("budgetTip");
+      if(!budget){
+        tip.textContent = "设置预算后，可以更直观地判断本月先满足哪些愿望。";
+      }else if(remaining < 0){
+        tip.textContent = `本月已超出可选预算 ${money(Math.abs(remaining))}，可以把后面的愿望留到下个月。`;
+      }else{
+        const affordable = wishes.filter(w => !w.completed && Number(w.price) <= remaining);
+        tip.textContent = affordable.length
+          ? `当前剩余预算可覆盖清单中的 ${affordable.length} 个愿望。`
+          : "当前剩余预算暂时无法覆盖待实现愿望，可以继续等待。";
+      }
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    window.moveWish = moveWish;
+    window.toggleComplete = toggleComplete;
+    window.deleteWish = deleteWish;
+    window.showImage = showImage;
+
+    render();
+  </script>
+</body>
+</html>
